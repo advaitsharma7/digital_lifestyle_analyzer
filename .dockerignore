@@ -1,0 +1,12 @@
+.git
+.venv
+.vendor
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+streamlit.out.log
+streamlit.err.log
+qa_artifacts
+tests\__pycache__
+src\__pycache__

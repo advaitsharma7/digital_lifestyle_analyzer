@@ -1,0 +1,184 @@
+{
+  "feature_order": [
+    "Age",
+    "Gender",
+    "Device_Type",
+    "Daily_Phone_Hours",
+    "Social_Media_Hours",
+    "Sleep_Hours",
+    "Caffeine_Intake_Cups",
+    "Weekend_Screen_Time_Hours",
+    "App_Usage_Count"
+  ],
+  "field_labels": {
+    "Age": "Age",
+    "Gender": "Gender",
+    "Device_Type": "Device Type",
+    "Daily_Phone_Hours": "Daily Phone Hours",
+    "Social_Media_Hours": "Social Media Hours",
+    "Sleep_Hours": "Sleep Hours",
+    "Caffeine_Intake_Cups": "Caffeine Intake",
+    "Weekend_Screen_Time_Hours": "Weekend Screen Time",
+    "App_Usage_Count": "App Usage Count",
+    "Stress_Level": "Stress Level",
+    "Work_Productivity_Score": "Productivity Score"
+  },
+  "defaults": {
+    "Age": 38,
+    "Gender": "Male",
+    "Device_Type": "Android",
+    "Daily_Phone_Hours": 5.8,
+    "Social_Media_Hours": 3.8,
+    "Sleep_Hours": 6.4,
+    "Caffeine_Intake_Cups": 2.0,
+    "Weekend_Screen_Time_Hours": 7.3,
+    "App_Usage_Count": 66
+  },
+  "options": {
+    "Gender": [
+      "Female",
+      "Male"
+    ],
+    "Device_Type": [
+      "Android",
+      "iOS"
+    ]
+  },
+  "ranges": {
+    "Age": {
+      "min": 18.0,
+      "max": 59.0,
+      "mean": 38.48702
+    },
+    "Daily_Phone_Hours": {
+      "min": 2.0,
+      "max": 10.0,
+      "mean": 5.825486
+    },
+    "Social_Media_Hours": {
+      "min": 0.8,
+      "max": 8.9,
+      "mean": 3.78913
+    },
+    "Sleep_Hours": {
+      "min": 5.0,
+      "max": 8.0,
+      "mean": 6.419391999999999
+    },
+    "Caffeine_Intake_Cups": {
+      "min": 0.0,
+      "max": 4.0,
+      "mean": 2.00246
+    },
+    "Weekend_Screen_Time_Hours": {
+      "min": 2.1,
+      "max": 13.0,
+      "mean": 7.331874
+    },
+    "App_Usage_Count": {
+      "min": 16.0,
+      "max": 148.0,
+      "mean": 66.44572
+    },
+    "Stress_Level": {
+      "min": 1.0,
+      "max": 5.0,
+      "mean": 1.17336
+    },
+    "Work_Productivity_Score": {
+      "min": 1.0,
+      "max": 7.0,
+      "mean": 2.50634
+    }
+  },
+  "metrics": {
+    "stress_accuracy": 0.8432,
+    "productivity_rmse": 0.8141
+  },
+  "feature_importance": {
+    "stress": {
+      "Daily_Phone_Hours": 0.18642,
+      "Sleep_Hours": 0.149103,
+      "App_Usage_Count": 0.147992,
+      "Weekend_Screen_Time_Hours": 0.142574,
+      "Social_Media_Hours": 0.122759,
+      "Age": 0.101458,
+      "Caffeine_Intake_Cups": 0.096199,
+      "Gender": 0.027147,
+      "Device_Type": 0.02635
+    },
+    "productivity": {
+      "Sleep_Hours": 0.388892,
+      "Social_Media_Hours": 0.291257,
+      "App_Usage_Count": 0.067658,
+      "Weekend_Screen_Time_Hours": 0.067263,
+      "Daily_Phone_Hours": 0.066797,
+      "Age": 0.065847,
+      "Caffeine_Intake_Cups": 0.031593,
+      "Device_Type": 0.010415,
+      "Gender": 0.010276
+    }
+  },
+  "app_usage_estimator": {
+    "intercept": -0.553334828831929,
+    "Daily_Phone_Hours": 11.501983182014836,
+    "Social_Media_Hours": -0.07447360686163851,
+    "Weekend_Screen_Time_Hours": 0.03772609945789185
+  },
+  "app_usage_bounds": {
+    "min": 16,
+    "max": 148
+  },
+  "dataset_summary": {
+    "rows": 50000,
+    "correlation_fields": [
+      "Daily_Phone_Hours",
+      "Social_Media_Hours",
+      "Sleep_Hours",
+      "Caffeine_Intake_Cups",
+      "Weekend_Screen_Time_Hours",
+      "App_Usage_Count",
+      "Stress_Level",
+      "Work_Productivity_Score"
+    ]
+  },
+  "cluster_centers": {
+    "0": {
+      "Daily_Phone_Hours": 7.111611287882731,
+      "Social_Media_Hours": 4.7720776172343635,
+      "Sleep_Hours": 6.593114600177351,
+      "Caffeine_Intake_Cups": 1.677429450732884,
+      "Weekend_Screen_Time_Hours": 8.713066611027072,
+      "Stress_Level": 1.0038599968702655,
+      "Work_Productivity_Score": 2.360648896771164
+    },
+    "1": {
+      "Daily_Phone_Hours": 4.235956897611326,
+      "Social_Media_Hours": 2.6440693243741586,
+      "Sleep_Hours": 6.392907772360388,
+      "Caffeine_Intake_Cups": 2.0256483795632403,
+      "Weekend_Screen_Time_Hours": 5.662961445486949,
+      "Stress_Level": 1.0077436800917685,
+      "Work_Productivity_Score": 2.9314131191871136
+    },
+    "2": {
+      "Daily_Phone_Hours": 8.027187791965119,
+      "Social_Media_Hours": 5.206664590470258,
+      "Sleep_Hours": 6.001448146994706,
+      "Caffeine_Intake_Cups": 2.884615384615389,
+      "Weekend_Screen_Time_Hours": 9.551479289940827,
+      "Stress_Level": 2.3087823108066043,
+      "Work_Productivity_Score": 1.3257552164434774
+    }
+  },
+  "cluster_labels": {
+    "2": "High Stress Users",
+    "1": "Balanced Users",
+    "0": "Low Activity Users"
+  },
+  "cluster_descriptions": {
+    "0": "Lighter overall digital intensity with 7.1h of daily phone use and calmer stress and caffeine patterns.",
+    "1": "More stable sleep (6.4h), lower stress (1.0), and the healthiest productivity mix.",
+    "2": "Longer screen days (8.0h phone use), shorter sleep (6.0h), and the highest stress profile."
+  }
+}

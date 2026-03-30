@@ -1,0 +1,9 @@
+.venv/
+.vendor/
+__pycache__/
+tests/__pycache__/
+src/__pycache__/
+*.pyc
+streamlit.out.log
+streamlit.err.log
+qa_artifacts/
