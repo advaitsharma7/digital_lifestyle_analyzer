@@ -1,6 +1,6 @@
-numpy
-pandas
-scikit-learn
-joblib
-streamlit
-plotly
+numpy==2.4.4
+pandas==2.3.3
+scikit-learn==1.8.0
+joblib==1.5.3
+streamlit==1.55.0
+plotly==6.6.0

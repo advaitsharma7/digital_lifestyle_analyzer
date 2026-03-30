@@ -18,9 +18,13 @@ if __name__ == "__main__":
     os.environ.setdefault("STREAMLIT_BROWSER_GATHER_USAGE_STATS", "false")
     os.environ.setdefault("STREAMLIT_SERVER_HEADLESS", "true")
     os.environ.setdefault("STREAMLIT_SERVER_SHOW_EMAIL_PROMPT", "false")
+    port = int(os.environ.get("PORT", os.environ.get("STREAMLIT_SERVER_PORT", "8501")))
+    address = os.environ.get("STREAMLIT_SERVER_ADDRESS", "0.0.0.0")
     main_script_path = str((ROOT_DIR / "app.py").resolve())
     flag_options = {
         "global.developmentMode": False,
+        "server.address": address,
+        "server.port": port,
         "server.headless": True,
         "server.showEmailPrompt": False,
         "browser.gatherUsageStats": False,

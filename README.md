@@ -60,6 +60,26 @@ Open:
 
 - [http://localhost:8501](http://localhost:8501)
 
+## Public Deployment
+
+The fastest public hosting option for this project is Streamlit Community Cloud because the app is already a native Streamlit repo and the repository is public on GitHub.
+
+Use:
+
+- Repository: `advaitsharma7/digital_lifestyle_analyzer`
+- Branch: `master`
+- App file: `app.py`
+
+Recommended cloud settings:
+
+- Python version: `3.11`
+
+Official deployment docs:
+
+- [Deploy on Streamlit Community Cloud](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app)
+
+After deployment, Streamlit will give you a public `*.streamlit.app` URL that anyone can open in a browser.
+
 ## Train Or Rebuild Artifacts
 
 If you want to rebuild the models and processed dataset:
