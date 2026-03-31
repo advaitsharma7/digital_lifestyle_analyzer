@@ -2,6 +2,10 @@
 
 Digital Lifestyle Analyzer is a Streamlit application that predicts stress and productivity from a minimal set of digital habit inputs, compares the user with a benchmark dataset, explains model behavior, and supports what-if lifestyle simulation.
 
+Live app:
+
+- [https://digitallifestyleanalyzer-aocmp5l22ul2hsy79qqenb.streamlit.app/](https://digitallifestyleanalyzer-aocmp5l22ul2hsy79qqenb.streamlit.app/)
+
 ## What Is Included
 
 - Streamlit application with interactive dashboard
