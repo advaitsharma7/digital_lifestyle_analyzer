@@ -315,7 +315,8 @@ with st.form("lifestyle_inputs"):
         current_age = baseline_inputs.get("Age")
         include_age = st.checkbox("Include age", value=current_age is not None)
         age_value = int(round(current_age if current_age is not None else metadata["defaults"]["Age"]))
-        age = st.slider("Age", min_value=13, max_value=80, value=age_value, disabled=not include_age)
+        age = st.slider("Age", min_value=13, max_value=80, value=age_value)
+        st.caption("Age is only applied when `Include age` is checked.")
 
         gender_options = ["Use dataset average"] + metadata["options"]["Gender"]
         current_gender = baseline_inputs.get("Gender")
