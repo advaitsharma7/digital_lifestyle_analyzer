@@ -176,6 +176,29 @@ def initialize_state(defaults: dict[str, object], reference_df) -> None:
         )
         reset_simulation_state(st.session_state.baseline_inputs)
 
+    baseline_inputs = st.session_state.baseline_inputs
+    input_defaults = {
+        "input_daily_phone_hours": float(baseline_inputs["Daily_Phone_Hours"]),
+        "input_social_media_hours": float(baseline_inputs["Social_Media_Hours"]),
+        "input_sleep_hours": float(baseline_inputs["Sleep_Hours"]),
+        "input_caffeine_intake": float(baseline_inputs["Caffeine_Intake_Cups"]),
+        "input_weekend_screen_time": float(baseline_inputs["Weekend_Screen_Time_Hours"]),
+        "input_include_age": baseline_inputs.get("Age") is not None,
+        "input_age": int(
+            round(
+                baseline_inputs["Age"]
+                if baseline_inputs.get("Age") is not None
+                else defaults["Age"]
+            )
+        ),
+        "input_gender": baseline_inputs.get("Gender") or "Use dataset average",
+        "input_device_type": baseline_inputs.get("Device_Type")
+        or "Use dataset average",
+    }
+    for key, value in input_defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = value
+
 
 def reset_simulation_state(inputs: dict[str, object]) -> None:
     st.session_state.sim_phone = float(inputs["Daily_Phone_Hours"])
@@ -268,82 +291,84 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-with st.form("lifestyle_inputs"):
-    input_left, input_right = st.columns(2)
-    baseline_inputs = st.session_state.baseline_inputs
+input_left, input_right = st.columns(2)
 
-    with input_left:
-        daily_phone_hours = st.slider(
-            "Daily Phone Hours",
-            min_value=0.0,
-            max_value=12.0,
-            value=float(baseline_inputs["Daily_Phone_Hours"]),
-            step=0.1,
-        )
-        social_media_hours = st.slider(
-            "Social Media Hours",
-            min_value=0.0,
-            max_value=10.0,
-            value=float(baseline_inputs["Social_Media_Hours"]),
-            step=0.1,
-        )
-        sleep_hours = st.slider(
-            "Sleep Hours",
-            min_value=0.0,
-            max_value=10.0,
-            value=float(baseline_inputs["Sleep_Hours"]),
-            step=0.1,
-        )
+with input_left:
+    st.slider(
+        "Daily Phone Hours",
+        min_value=0.0,
+        max_value=12.0,
+        step=0.1,
+        key="input_daily_phone_hours",
+    )
+    st.slider(
+        "Social Media Hours",
+        min_value=0.0,
+        max_value=10.0,
+        step=0.1,
+        key="input_social_media_hours",
+    )
+    st.slider(
+        "Sleep Hours",
+        min_value=0.0,
+        max_value=10.0,
+        step=0.1,
+        key="input_sleep_hours",
+    )
 
-    with input_right:
-        caffeine_intake = st.slider(
-            "Caffeine Intake (cups)",
-            min_value=0.0,
-            max_value=8.0,
-            value=float(baseline_inputs["Caffeine_Intake_Cups"]),
-            step=0.5,
-        )
-        weekend_screen_time = st.slider(
-            "Weekend Screen Time",
-            min_value=0.0,
-            max_value=15.0,
-            value=float(baseline_inputs["Weekend_Screen_Time_Hours"]),
-            step=0.1,
-        )
+with input_right:
+    st.slider(
+        "Caffeine Intake (cups)",
+        min_value=0.0,
+        max_value=8.0,
+        step=0.5,
+        key="input_caffeine_intake",
+    )
+    st.slider(
+        "Weekend Screen Time",
+        min_value=0.0,
+        max_value=15.0,
+        step=0.1,
+        key="input_weekend_screen_time",
+    )
 
-    with st.expander("Personalize results (optional)", expanded=False):
-        current_age = baseline_inputs.get("Age")
-        include_age = st.checkbox("Include age", value=current_age is not None)
-        age_value = int(round(current_age if current_age is not None else metadata["defaults"]["Age"]))
-        age = st.slider("Age", min_value=13, max_value=80, value=age_value)
-        st.caption("Age is only applied when `Include age` is checked.")
+with st.expander("Personalize results (optional)", expanded=False):
+    st.checkbox("Include age", key="input_include_age")
+    st.slider(
+        "Age",
+        min_value=13,
+        max_value=80,
+        key="input_age",
+        disabled=not st.session_state.input_include_age,
+    )
+    st.caption("Age is only applied when `Include age` is checked.")
 
-        gender_options = ["Use dataset average"] + metadata["options"]["Gender"]
-        current_gender = baseline_inputs.get("Gender")
-        gender_index = (
-            gender_options.index(current_gender) if current_gender in gender_options else 0
-        )
-        gender = st.selectbox("Gender", gender_options, index=gender_index)
+    gender_options = ["Use dataset average"] + metadata["options"]["Gender"]
+    if st.session_state.input_gender not in gender_options:
+        st.session_state.input_gender = gender_options[0]
+    st.selectbox("Gender", gender_options, key="input_gender")
 
-        device_options = ["Use dataset average"] + metadata["options"]["Device_Type"]
-        current_device = baseline_inputs.get("Device_Type")
-        device_index = (
-            device_options.index(current_device) if current_device in device_options else 0
-        )
-        device_type = st.selectbox("Device Type", device_options, index=device_index)
+    device_options = ["Use dataset average"] + metadata["options"]["Device_Type"]
+    if st.session_state.input_device_type not in device_options:
+        st.session_state.input_device_type = device_options[0]
+    st.selectbox("Device Type", device_options, key="input_device_type")
 
-    submitted = st.form_submit_button("Analyze My Lifestyle", width="stretch")
+submitted = st.button("Analyze My Lifestyle", width="stretch")
 
 if submitted:
     updated_inputs = {
-        "Daily_Phone_Hours": daily_phone_hours,
-        "Social_Media_Hours": social_media_hours,
-        "Sleep_Hours": sleep_hours,
-        "Caffeine_Intake_Cups": caffeine_intake,
-        "Weekend_Screen_Time_Hours": weekend_screen_time,
-        "Age": age if include_age else None,
-        "Gender": None if gender == "Use dataset average" else gender,
-        "Device_Type": None if device_type == "Use dataset average" else device_type,
+        "Daily_Phone_Hours": st.session_state.input_daily_phone_hours,
+        "Social_Media_Hours": st.session_state.input_social_media_hours,
+        "Sleep_Hours": st.session_state.input_sleep_hours,
+        "Caffeine_Intake_Cups": st.session_state.input_caffeine_intake,
+        "Weekend_Screen_Time_Hours": st.session_state.input_weekend_screen_time,
+        "Age": st.session_state.input_age if st.session_state.input_include_age else None,
+        "Gender": None
+        if st.session_state.input_gender == "Use dataset average"
+        else st.session_state.input_gender,
+        "Device_Type": None
+        if st.session_state.input_device_type == "Use dataset average"
+        else st.session_state.input_device_type,
     }
     st.session_state.baseline_inputs = updated_inputs
     st.session_state.analysis = analyze_profile(updated_inputs, reference_df)
