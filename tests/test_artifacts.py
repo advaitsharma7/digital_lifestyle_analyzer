@@ -31,6 +31,11 @@ class ArtifactsTestCase(unittest.TestCase):
         self.assertLessEqual(self.metadata["metrics"]["stress_accuracy"], 1.0)
         self.assertGreaterEqual(self.metadata["metrics"]["productivity_rmse"], 0.0)
 
+    def test_productivity_model_excludes_app_usage_count(self) -> None:
+        self.assertNotIn(
+            "App_Usage_Count", self.metadata["feature_importance"]["productivity"]
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

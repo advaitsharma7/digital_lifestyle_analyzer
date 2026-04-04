@@ -110,7 +110,7 @@ def build_explanations(
 
 def generate_insights(
     profile: dict[str, float | str],
-    stress_level: int,
+    stress_level: float,
     productivity_score: float,
     cluster: dict[str, object],
     percentiles: dict[str, dict[str, float | str]],
@@ -123,6 +123,10 @@ def generate_insights(
     caffeine = float(profile["Caffeine_Intake_Cups"])
     weekend_screen = float(profile["Weekend_Screen_Time_Hours"])
 
+    if sleep_hours < 4.0:
+        insights.append(
+            "Your sleep level is critically low and should be treated as the first priority before any productivity optimization."
+        )
     if sleep_hours < 6.0:
         insights.append(
             "Sleep is your biggest pressure point right now. Pushing it closer to seven hours is likely to reduce stress quickly."

@@ -15,8 +15,11 @@ from src.charts import (
     build_radar_chart,
 )
 from src.config import UI_FIELD_LABELS
-from src.data import load_processed_dataset
-from src.inference import analyze_profile, load_artifacts
+from src.inference import (
+    analyze_profile,
+    load_artifacts,
+    load_display_reference_dataset,
+)
 from src.training import ensure_artifacts
 
 
@@ -206,10 +209,10 @@ def reset_simulation_state(inputs: dict[str, object]) -> None:
     st.session_state.sim_sleep = float(inputs["Sleep_Hours"])
 
 
-def stress_gauge_color(stress_level: int) -> str:
-    if stress_level >= 4:
+def stress_gauge_color(stress_level: float) -> str:
+    if stress_level >= 4.0:
         return "#c65d42"
-    if stress_level == 3:
+    if stress_level >= 3.0:
         return "#d7a449"
     return "#1a6f63"
 
@@ -231,7 +234,9 @@ def format_delta(value: float, positive_good: bool = True, digits: int = 1) -> s
 def scenario_summary(
     baseline_result: dict[str, object], scenario_result: dict[str, object]
 ) -> str:
-    stress_shift = int(scenario_result["stress_level"]) - int(baseline_result["stress_level"])
+    stress_shift = float(scenario_result["stress_level"]) - float(
+        baseline_result["stress_level"]
+    )
     productivity_shift = float(scenario_result["productivity_score"]) - float(
         baseline_result["productivity_score"]
     )
@@ -241,7 +246,7 @@ def scenario_summary(
 
     if stress_shift < 0 and productivity_shift > 0:
         return (
-            f"This scenario lowers stress by {abs(stress_shift)} level(s), lifts "
+            f"This scenario lowers stress by {abs(stress_shift):.1f} point(s), lifts "
             f"productivity by {productivity_shift:.1f}, and adds {score_shift:.1f} "
             "points to your lifestyle score."
         )
@@ -271,7 +276,7 @@ apply_styles()
 with st.spinner("Preparing the lifestyle models and benchmark dataset..."):
     ensure_artifacts()
     artifacts = load_artifacts()
-    reference_df = load_processed_dataset()
+    reference_df = load_display_reference_dataset()
 
 metadata = artifacts["metadata"]
 initialize_state(metadata["defaults"], reference_df)
@@ -387,16 +392,19 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+for warning in analysis["warnings"]:
+    st.warning(warning)
+
 top_left, top_mid, top_right = st.columns([1.05, 1.05, 0.85])
 
 with top_left:
     st.plotly_chart(
         build_gauge(
-            title="Predicted Stress Level",
+            title="Predicted Stress Score",
             value=float(analysis["stress_level"]),
             minimum=1,
             maximum=5,
-            accent=stress_gauge_color(int(analysis["stress_level"])),
+            accent=stress_gauge_color(float(analysis["stress_level"])),
         ),
         width="stretch",
     )
@@ -414,12 +422,22 @@ with top_mid:
     )
 
 with top_right:
+    penalty_text = ""
+    if analysis["lifestyle_score"]["penalties"]:
+        penalty_labels = ", ".join(
+            penalty["label"] for penalty in analysis["lifestyle_score"]["penalties"]
+        )
+        penalty_text = (
+            f'<p style="margin-top:0.65rem;color:#8b5f2b;">Penalties applied: '
+            f"{penalty_labels}.</p>"
+        )
     st.markdown(
         f"""
         <div class="score-card">
           <div class="eyebrow">Lifestyle Score</div>
           <div class="big">{analysis['lifestyle_score']['total']:.0f}</div>
           <p>Your weighted balance score blends sleep, screen time, stress, and productivity into one read.</p>
+          {penalty_text}
         </div>
         """,
         unsafe_allow_html=True,
@@ -429,6 +447,7 @@ with top_right:
         <div class="note-card">
           <div class="eyebrow">Behavioral Archetype</div>
           <p><strong>{analysis['cluster']['label']}</strong><br>{analysis['cluster']['description']}</p>
+          <p style="margin-top:0.65rem;color:#607079;">{analysis['cluster']['average_text']}</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -578,11 +597,11 @@ with lab_right:
     metric_a, metric_b, metric_c = st.columns(3)
     metric_a.metric(
         "Stress",
-        f"{scenario_result['stress_level']}/5",
+        f"{scenario_result['stress_level']:.1f}/5",
         delta=format_delta(
             float(scenario_result["stress_level"]) - float(analysis["stress_level"]),
             positive_good=False,
-            digits=0,
+            digits=1,
         ),
     )
     metric_b.metric(
@@ -666,7 +685,7 @@ st.markdown(
     <div class="footer-note">
       Stress model accuracy: <strong>{metadata['metrics']['stress_accuracy']:.2%}</strong>.
       Productivity RMSE: <strong>{metadata['metrics']['productivity_rmse']:.2f}</strong>.
-      These outputs are benchmarked against a synthetic lifestyle dataset and are intended for reflection, not diagnosis.
+      Productivity is percentile-calibrated against the benchmark dataset for the 1-10 UI scale. These outputs are intended for reflection, not diagnosis.
     </div>
     """,
     unsafe_allow_html=True,

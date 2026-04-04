@@ -13,7 +13,10 @@ from src.config import (
     NUMERIC_FEATURES,
     PREPROCESSOR_PATH,
     PROCESSED_DATA_PATH,
+    PRODUCTIVITY_MODEL_FEATURES,
     PRODUCTIVITY_MODEL_PATH,
+    PRODUCTIVITY_NUMERIC_FEATURES,
+    PRODUCTIVITY_PREPROCESSOR_PATH,
     RANDOM_STATE,
     RAW_DATA_PATH,
     STRESS_MODEL_PATH,
@@ -40,7 +43,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 
-def build_preprocessor() -> ColumnTransformer:
+def build_preprocessor(numeric_features: list[str]) -> ColumnTransformer:
     numeric_pipeline = Pipeline(
         steps=[
             ("imputer", SimpleImputer(strategy="median")),
@@ -57,7 +60,7 @@ def build_preprocessor() -> ColumnTransformer:
     )
     return ColumnTransformer(
         transformers=[
-            ("num", numeric_pipeline, NUMERIC_FEATURES),
+            ("num", numeric_pipeline, numeric_features),
             ("cat", categorical_pipeline, ["Gender", "Device_Type"]),
         ],
         remainder="drop",
@@ -188,6 +191,7 @@ def artifacts_exist() -> bool:
         STRESS_MODEL_PATH,
         PRODUCTIVITY_MODEL_PATH,
         PREPROCESSOR_PATH,
+        PRODUCTIVITY_PREPROCESSOR_PATH,
         CLUSTER_BUNDLE_PATH,
         METADATA_PATH,
         PROCESSED_DATA_PATH,
@@ -233,9 +237,17 @@ def train_models() -> dict[str, object]:
         stratify=stress_target,
     )
 
-    preprocessor = build_preprocessor()
-    x_train_transformed = preprocessor.fit_transform(x_train)
-    x_test_transformed = preprocessor.transform(x_test)
+    stress_preprocessor = build_preprocessor(NUMERIC_FEATURES)
+    productivity_preprocessor = build_preprocessor(PRODUCTIVITY_NUMERIC_FEATURES)
+
+    x_train_stress = stress_preprocessor.fit_transform(x_train[MODEL_FEATURES])
+    x_test_stress = stress_preprocessor.transform(x_test[MODEL_FEATURES])
+    x_train_productivity = productivity_preprocessor.fit_transform(
+        x_train[PRODUCTIVITY_MODEL_FEATURES]
+    )
+    x_test_productivity = productivity_preprocessor.transform(
+        x_test[PRODUCTIVITY_MODEL_FEATURES]
+    )
 
     stress_model = RandomForestClassifier(
         n_estimators=300,
@@ -245,7 +257,7 @@ def train_models() -> dict[str, object]:
         class_weight="balanced_subsample",
         n_jobs=1,
     )
-    stress_model.fit(x_train_transformed, stress_train)
+    stress_model.fit(x_train_stress, stress_train)
 
     productivity_model = RandomForestRegressor(
         n_estimators=300,
@@ -254,17 +266,20 @@ def train_models() -> dict[str, object]:
         random_state=RANDOM_STATE,
         n_jobs=1,
     )
-    productivity_model.fit(x_train_transformed, productivity_train)
+    productivity_model.fit(x_train_productivity, productivity_train)
 
-    stress_predictions = stress_model.predict(x_test_transformed)
-    productivity_predictions = productivity_model.predict(x_test_transformed)
+    stress_predictions = stress_model.predict(x_test_stress)
+    productivity_predictions = productivity_model.predict(x_test_productivity)
 
-    transformed_feature_names = preprocessor.get_feature_names_out().tolist()
+    stress_feature_names = stress_preprocessor.get_feature_names_out().tolist()
+    productivity_feature_names = (
+        productivity_preprocessor.get_feature_names_out().tolist()
+    )
     stress_feature_importance = aggregate_feature_importances(
-        stress_model.feature_importances_, transformed_feature_names
+        stress_model.feature_importances_, stress_feature_names
     )
     productivity_feature_importance = aggregate_feature_importances(
-        productivity_model.feature_importances_, transformed_feature_names
+        productivity_model.feature_importances_, productivity_feature_names
     )
 
     cluster_bundle, processed_dataset = build_cluster_bundle(model_dataset)
@@ -273,11 +288,17 @@ def train_models() -> dict[str, object]:
     artifact_dump_options = {"compress": 3}
     joblib.dump(stress_model, STRESS_MODEL_PATH, **artifact_dump_options)
     joblib.dump(productivity_model, PRODUCTIVITY_MODEL_PATH, **artifact_dump_options)
-    joblib.dump(preprocessor, PREPROCESSOR_PATH, **artifact_dump_options)
+    joblib.dump(stress_preprocessor, PREPROCESSOR_PATH, **artifact_dump_options)
+    joblib.dump(
+        productivity_preprocessor,
+        PRODUCTIVITY_PREPROCESSOR_PATH,
+        **artifact_dump_options,
+    )
     joblib.dump(cluster_bundle, CLUSTER_BUNDLE_PATH, **artifact_dump_options)
 
     metadata = {
         "feature_order": MODEL_FEATURES,
+        "productivity_feature_order": PRODUCTIVITY_MODEL_FEATURES,
         "field_labels": UI_FIELD_LABELS,
         "defaults": defaults,
         "options": options,

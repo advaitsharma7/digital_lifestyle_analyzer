@@ -10,6 +10,7 @@ MODELS_DIR = ROOT_DIR / "models"
 STRESS_MODEL_PATH = MODELS_DIR / "stress_model.pkl"
 PRODUCTIVITY_MODEL_PATH = MODELS_DIR / "productivity_model.pkl"
 PREPROCESSOR_PATH = MODELS_DIR / "preprocessor.pkl"
+PRODUCTIVITY_PREPROCESSOR_PATH = MODELS_DIR / "productivity_preprocessor.pkl"
 CLUSTER_BUNDLE_PATH = MODELS_DIR / "cluster_bundle.pkl"
 METADATA_PATH = MODELS_DIR / "model_metadata.json"
 
@@ -38,6 +39,26 @@ MODEL_FEATURES = [
     "Caffeine_Intake_Cups",
     "Weekend_Screen_Time_Hours",
     "App_Usage_Count",
+]
+
+PRODUCTIVITY_MODEL_FEATURES = [
+    "Age",
+    "Gender",
+    "Device_Type",
+    "Daily_Phone_Hours",
+    "Social_Media_Hours",
+    "Sleep_Hours",
+    "Caffeine_Intake_Cups",
+    "Weekend_Screen_Time_Hours",
+]
+
+PRODUCTIVITY_NUMERIC_FEATURES = [
+    "Age",
+    "Daily_Phone_Hours",
+    "Social_Media_Hours",
+    "Sleep_Hours",
+    "Caffeine_Intake_Cups",
+    "Weekend_Screen_Time_Hours",
 ]
 
 EXPLAINABILITY_FEATURES = [

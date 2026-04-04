@@ -7,3 +7,4 @@ src/__pycache__/
 streamlit.out.log
 streamlit.err.log
 qa_artifacts/
+*.pdf
