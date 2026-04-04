@@ -10,6 +10,16 @@
     "Weekend_Screen_Time_Hours",
     "App_Usage_Count"
   ],
+  "productivity_feature_order": [
+    "Age",
+    "Gender",
+    "Device_Type",
+    "Daily_Phone_Hours",
+    "Social_Media_Hours",
+    "Sleep_Hours",
+    "Caffeine_Intake_Cups",
+    "Weekend_Screen_Time_Hours"
+  ],
   "field_labels": {
     "Age": "Age",
     "Gender": "Gender",
@@ -93,7 +103,7 @@
   },
   "metrics": {
     "stress_accuracy": 0.8432,
-    "productivity_rmse": 0.8141
+    "productivity_rmse": 0.8161
   },
   "feature_importance": {
     "stress": {
@@ -108,15 +118,14 @@
       "Device_Type": 0.02635
     },
     "productivity": {
-      "Sleep_Hours": 0.388892,
-      "Social_Media_Hours": 0.291257,
-      "App_Usage_Count": 0.067658,
-      "Weekend_Screen_Time_Hours": 0.067263,
-      "Daily_Phone_Hours": 0.066797,
-      "Age": 0.065847,
-      "Caffeine_Intake_Cups": 0.031593,
-      "Device_Type": 0.010415,
-      "Gender": 0.010276
+      "Sleep_Hours": 0.395116,
+      "Social_Media_Hours": 0.299975,
+      "Daily_Phone_Hours": 0.081948,
+      "Weekend_Screen_Time_Hours": 0.081486,
+      "Age": 0.080099,
+      "Caffeine_Intake_Cups": 0.036269,
+      "Device_Type": 0.012674,
+      "Gender": 0.012434
     }
   },
   "app_usage_estimator": {
@@ -144,30 +153,30 @@
   },
   "cluster_centers": {
     "0": {
-      "Daily_Phone_Hours": 7.111611287882731,
-      "Social_Media_Hours": 4.7720776172343635,
+      "Daily_Phone_Hours": 7.111611287882729,
+      "Social_Media_Hours": 4.77207761723436,
       "Sleep_Hours": 6.593114600177351,
-      "Caffeine_Intake_Cups": 1.677429450732884,
-      "Weekend_Screen_Time_Hours": 8.713066611027072,
-      "Stress_Level": 1.0038599968702655,
-      "Work_Productivity_Score": 2.360648896771164
+      "Caffeine_Intake_Cups": 1.6774294507328884,
+      "Weekend_Screen_Time_Hours": 8.71306661102707,
+      "Stress_Level": 1.0038599968702624,
+      "Work_Productivity_Score": 2.360648896771162
     },
     "1": {
-      "Daily_Phone_Hours": 4.235956897611326,
-      "Social_Media_Hours": 2.6440693243741586,
+      "Daily_Phone_Hours": 4.235956897611315,
+      "Social_Media_Hours": 2.6440693243741684,
       "Sleep_Hours": 6.392907772360388,
       "Caffeine_Intake_Cups": 2.0256483795632403,
-      "Weekend_Screen_Time_Hours": 5.662961445486949,
-      "Stress_Level": 1.0077436800917685,
-      "Work_Productivity_Score": 2.9314131191871136
+      "Weekend_Screen_Time_Hours": 5.662961445486954,
+      "Stress_Level": 1.0077436800917658,
+      "Work_Productivity_Score": 2.931413119187113
     },
     "2": {
-      "Daily_Phone_Hours": 8.027187791965119,
+      "Daily_Phone_Hours": 8.027187791965115,
       "Social_Media_Hours": 5.206664590470258,
       "Sleep_Hours": 6.001448146994706,
-      "Caffeine_Intake_Cups": 2.884615384615389,
-      "Weekend_Screen_Time_Hours": 9.551479289940827,
-      "Stress_Level": 2.3087823108066043,
+      "Caffeine_Intake_Cups": 2.8846153846153992,
+      "Weekend_Screen_Time_Hours": 9.55147928994083,
+      "Stress_Level": 2.308782310806592,
       "Work_Productivity_Score": 1.3257552164434774
     }
   },
